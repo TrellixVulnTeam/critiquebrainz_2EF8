@@ -103,7 +103,7 @@ def fetch_multiple_literary_works(bbids: List[uuid.UUID], work_type=None, limit=
             """.format(work_type_filter_string=work_type_filter_string)
             ), query_params)
 
-            literary_works = result.fetchall()
+            literary_works = result.mappings()
             results = {}
             for literary_work in literary_works:
                 literary_work = dict(literary_work)
@@ -144,7 +144,7 @@ def fetch_edition_groups_for_works(bbid: uuid.UUID):
                 AND rel.type_id = :relationship_type_id
                 """), {'bbid': str(bbid), 'relationship_type_id': EDITION_WORK_CONTAINS_REL_ID})
 
-            edition_groups = result.fetchall()
+            edition_groups = result.mappings()
             edition_group_bbids = []
 
             for edition_group in edition_groups:

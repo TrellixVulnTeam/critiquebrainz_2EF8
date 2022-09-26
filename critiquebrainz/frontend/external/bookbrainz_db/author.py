@@ -94,7 +94,7 @@ def fetch_multiple_authors(bbids: List[uuid.UUID]) -> dict:
 					 gender.name
 			"""), {'bbids': tuple(bbids)})
 
-			authors = result.fetchall()
+			authors = result.mappings()
 			results = {}
 			for author in authors:
 				author = dict(author)
