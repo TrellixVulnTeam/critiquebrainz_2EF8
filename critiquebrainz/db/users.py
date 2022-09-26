@@ -1,6 +1,5 @@
 import uuid
 from datetime import datetime
-from hashlib import md5
 
 import sqlalchemy
 
@@ -121,7 +120,7 @@ def create(**user_data):
     if user_data:
         raise TypeError('Unexpected **user_data: %r' % user_data)
 
-    with db.engine.connect() as connection:
+    with db.engine.begin() as connection:
         result = connection.execute(sqlalchemy.text("""
             INSERT INTO "user" (id, display_name, email, created, musicbrainz_id,
                                 is_blocked, license_choice, musicbrainz_row_id)
@@ -270,7 +269,7 @@ def unblock(user_id):
     Args:
         user_id(uuid): ID of user to be unblocked.
     """
-    with db.engine.connect() as connection:
+    with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("""
             UPDATE "user"
                SET is_blocked = 'false'
@@ -286,7 +285,7 @@ def block(user_id):
     Args:
         user_id(uuid): ID of user to be blocked.
     """
-    with db.engine.connect() as connection:
+    with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("""
             UPDATE "user"
                SET is_blocked = 'true'
@@ -553,7 +552,7 @@ def update(user_id, user_new_info):
             """.format(setstr))
     if user_new_info:
         user_new_info["user_id"] = user_id
-        with db.engine.connect() as connection:
+        with db.engine.begin() as connection:
             connection.execute(query, user_new_info)
 
 
@@ -564,7 +563,7 @@ def delete(user_id):
     Args:
         user_id(uuid): ID of the user to be deleted.
     """
-    with db.engine.connect() as connection:
+    with db.engine.begin() as connection:
         connection.execute(sqlalchemy.text("""
             DELETE
               FROM "user"
